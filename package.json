@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "eject": "expo eject",
     "build:web": "webpack --config web/webpack.config.js --contet-base web/",
-    "dev:web": "webpack-dev-server --config web/webpack.config.js --hot"
+    "dev:web": "webpack-dev-server --config web/webpack.config.js --hot",
+    "test": "echo 'skipping tests'"
   },
   "dependencies": {
     "expo": "^30.0.1",
