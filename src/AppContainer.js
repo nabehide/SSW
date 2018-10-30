@@ -11,6 +11,10 @@ import {
 } from 'react-native'
 import LyricCodes from './components/LyricCodes'
 import AddNewFile from './components/AddNewFile'
+import {
+  changeNewFileName,
+  setFileNames,
+} from './actions'
 
 const template_data = [
   {
@@ -40,14 +44,12 @@ class AppContainer extends React.Component {
     super(props)
     this.state = {
       name: "",
-      names: [],
       newName: "",
       isSaved: true,
       rows: [ { columns: [ { "code": "", "lyric": "", }, ], }, ],
       selected: 0,
     }
     this.createRef(this.state.rows)
-    this.textInputNewFilename = React.createRef()
   }
 
   createRef(data) {
@@ -161,12 +163,13 @@ class AppContainer extends React.Component {
     this.loadData()
   }
   componentDidMount = () => {
+    const { dispatch } = this.props
     AsyncStorage.getAllKeys()
       .then(req => {
         this.setState({
-          names: req,
           name: req[0]
         })
+        dispatch(setFileNames(req))
         this.loadData()
       })
       .catch(error => console.log("error", error))
@@ -198,10 +201,15 @@ class AppContainer extends React.Component {
   handlePressDelete = () => {
     AsyncStorage.removeItem(this.state.name)
     .then(() => {
-      const index = this.state.names.indexOf(this.state.name)
-      const nextNames = this.state.names
-      nextNames.splice(index, 1)
-      this.setState({ names: nextNames })
+      const { dispatch } = this.props
+      const { fileNames } = this.props.state.file
+      const nextFileNames = fileNames
+      const index = fileNames.indexOf(this.state.name)
+      nextFileNames.splice(index, 1)
+      dispatch(setFileNames(nextFileNames))
+
+      // const index = this.props.fileNames.indexOf(this.state.name)
+
       setTimeout(() => {
         this.loadData()
       }, 1)
@@ -214,34 +222,16 @@ class AppContainer extends React.Component {
       this.loadData()
     }, 1)
   }
-  handlePressNew = () => {
-    const { dispatch, newFileName } = this.props
-    const nextNames = this.state.names
-    // this.state.names.push(this.state.newName)
-    this.state.names.push(newFileName)
-    this.setState({ names: nextNames })
-
-    // const index = this.state.names.indexOf(this.state.newName)
-
-    this.textInputNewFilename.current.clear()
-    dispatch(changeNewFileName(""))
-  }
-
-  handleChangeNewFileName = (text) => {
-    const { dispatch } = this.props
-    dispatch(changeNewFileName(text))
-  }
 
   renderPickerItems = () => {
-    this.state.names.map((name, i) => {
+    this.props.state.file.fileNames.map((name, i) => {
       return <Picker.Item key={i} value={name} label={name} />
     })
   }
 
   render() {
-    const { dispatch, newFileName } = this.props
-    // let items = this.state.names.map((name, i) => {
-    let items = this.state.names.map((name, i) => {
+    const { dispatch } = this.props
+    let items = this.props.state.file.fileNames.map((name, i) => {
       return <Picker.Item key={i} value={name} label={name} />
     })
     return (
@@ -291,16 +281,3 @@ function mapStateToProps(state) {
   return {state}
 }
 export default connect(mapStateToProps)(AppContainer)
-/*
-        <View style={styles.subContainer}>
-          <TextInput styles={styles.textInput}
-            ref={this.textInputNewFilename}
-            value={newFileName}
-            onChangeText={this.handleChangeNewFileName}
-          />
-          <Button style={styles.button}
-            onPress={() => this.handlePressNew()}
-            title="new"
-          />
-        </View>
-*/

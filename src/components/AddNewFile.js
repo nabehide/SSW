@@ -1,10 +1,16 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   Button,
   Picker,
   TextInput,
   View,
 } from 'react-native'
+
+import {
+  changeNewFileName,
+  setFileNames,
+} from '../actions'
 
 const styles = {
   subContainer: {
@@ -17,29 +23,38 @@ const styles = {
   },
 }
 
-export default class AddNewFile extends React.Component {
+class AddNewFile extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
     }
+    this.textInputNewFilename = React.createRef()
+  }
+  handleChangeNewFileName = (text) => {
+    const { dispatch } = this.props
+    dispatch(changeNewFileName(text))
   }
   handlePressNew = () => {
-    const { newName } = this.props
-    const nextNames = this.state.names
-    this.state.names.push(newName)
-    this.setState({ names: nextNames })
+    const { dispatch } = this.props
+    const { newFileName, fileNames } = this.props.state.file
 
-    const index = this.state.names.indexOf(newName)
+    const nextFileNames = fileNames
+    nextFileNames.push(newFileName)
+    dispatch(setFileNames(nextFileNames))
+
+    // const index = this.state.names.indexOf(this.state.newName)
 
     this.textInputNewFilename.current.clear()
+    dispatch(changeNewFileName(""))
   }
   render() {
-    const { newName } = this.props
+    const { newFileName } = this.props
     return (
       <View style={styles.subContainer}>
         <TextInput style={styles.textInput}
           ref={this.textInputNewFilename}
-          onChangeText={(text) => this.setState({ newName: text })}
+          value={newFileName}
+          onChangeText={this.handleChangeNewFileName}
         />
         <Button style={styles.button}
           onPress={() => this.handlePressNew()}
@@ -49,3 +64,7 @@ export default class AddNewFile extends React.Component {
     )
   }
 }
+function mapStateToProps(state) {
+  return {state}
+}
+export default connect(mapStateToProps)(AddNewFile)

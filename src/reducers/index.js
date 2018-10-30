@@ -12,8 +12,10 @@ const fileReducer = (state = initState, action) => {
         ...state,
         newFileName: action.newFileName,
       }
-    case 'ADD_FILE_NAMES':
+    case 'SET_FILE_NAMES':
       return {
+        ...state,
+        fileNames: action.fileNames,
       }
     default:
       return state
