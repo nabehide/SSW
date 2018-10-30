@@ -1,0 +1,32 @@
+{
+  "name": "empty-project-template",
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject",
+    "build:web": "webpack --config web/webpack.config.js --contet-base web/",
+    "dev:web": "webpack-dev-server --config web/webpack.config.js --hot"
+  },
+  "dependencies": {
+    "expo": "^30.0.1",
+    "react": "16.3.1",
+    "react-dom": "^16.6.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-native-web": "^0.9.5",
+    "react-redux": "^5.1.0",
+    "redux": "^4.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-react-native-web": "^0.9.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react-native": "^4.0.1",
+    "webpack": "^4.23.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  }
+}
